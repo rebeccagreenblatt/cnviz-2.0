@@ -55,6 +55,9 @@ jobs:
         working-directory: frontend
         run: npm run build:offline
 
+      - name: Add the report script to the release files
+        run: cp report/cnviz_report.py frontend/dist-offline/
+
       - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
         with:
           name: offline-build
@@ -83,7 +86,9 @@ jobs:
       - name: Sign build provenance
         uses: actions/attest-build-provenance@e8998f949152b193b063cb0ec769d69d929409be # v2.4.0
         with:
-          subject-path: dist-offline/cnviz-${{ env.VERSION }}.html
+          subject-path: |
+            dist-offline/cnviz-${{ env.VERSION }}.html
+            dist-offline/cnviz_report.py
 
       - name: Publish release
         env:
@@ -93,17 +98,19 @@ jobs:
           file="cnviz-$VERSION.html"
           sum=$(cut -d' ' -f1 "dist-offline/$file.sha256")
           cat > notes.md <<EOF
-          Offline single-file CNViz $VERSION, built automatically from commit $GITHUB_SHA.
+          CNViz $VERSION, built automatically from commit $GITHUB_SHA.
 
-          **SHA-256:** \`$sum\`
+          - \`$file\`: the offline viewer, and the template for report files. **SHA-256:** \`$sum\`
+          - \`cnviz_report.py\`: writes a report file for one case (Python 3.8+, standard library only).
 
-          Verify the download:
+          Verify the downloads:
           \`\`\`
           shasum -a 256 $file
           gh attestation verify $file --repo $GITHUB_REPOSITORY
+          gh attestation verify cnviz_report.py --repo $GITHUB_REPOSITORY
           \`\`\`
           Pin this checksum in report pipelines with \`cnviz_report.py --expect-sha256 $sum\`.
           EOF
           gh release create "$GITHUB_REF_NAME" \
-            "dist-offline/$file" "dist-offline/$file.sha256" \
+            "dist-offline/$file" "dist-offline/$file.sha256" "dist-offline/cnviz_report.py" \
             --title "CNViz $VERSION" --notes-file notes.md
