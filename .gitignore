@@ -1,0 +1,39 @@
+# Build output
+dist/
+build/
+frontend/.vite/
+
+# Node
+node_modules/
+*.log
+npm-debug.log*
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Editor / IDE
+.vscode/
+.idea/
+
+# Claude Code local config
+.claude/
+
+# Legacy Python env (can be deleted manually)
+.venv/
+
+# Local notes for Claude Code (not published)
+CLAUDE.local.md
+
+# Never publish: talk files, documents, local test data (patterns starting with / match the repo root only)
+*.pptx
+*.ppt
+*.pdf
+*.docx
+*.doc
+*.key
+~$*
+/demo/
+/test_controls/
+/frontend/test_*
+.Rhistory

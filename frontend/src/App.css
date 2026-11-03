@@ -1,0 +1,410 @@
+/* ── Layout ─────────────────────────────────────────────── */
+.app {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 1rem 1.5rem 2rem;
+}
+
+/* ── Header ────────────────────────────────────────────── */
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.6rem 1rem;
+  background: linear-gradient(135deg, #0f2b4a, #1a5276);
+  border-radius: 10px;
+  margin-bottom: 1rem;
+}
+
+.header h1 {
+  font-size: 1.4rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  color: #fff;
+  margin: 0;
+}
+
+.btn {
+  font-size: 0.82rem;
+  font-weight: 500;
+  padding: 0.35rem 0.85rem;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  background: #fff;
+  color: #374151;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+.btn:hover {
+  background: #f3f4f6;
+  border-color: #9ca3af;
+}
+
+.btn-primary {
+  background: #1a5276;
+  color: #fff;
+  border-color: #1a5276;
+}
+.btn-primary:hover {
+  background: #21669a;
+  border-color: #21669a;
+}
+
+/* Light variant for buttons on dark backgrounds */
+.btn-light {
+  background: rgba(255, 255, 255, 0.15);
+  color: #fff;
+  border-color: rgba(255, 255, 255, 0.3);
+}
+.btn-light:hover {
+  background: rgba(255, 255, 255, 0.25);
+  border-color: rgba(255, 255, 255, 0.5);
+}
+
+/* ── Case info bar ─────────────────────────────────────── */
+.case-bar {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+  padding: 0.6rem 0.85rem;
+  background: #eef4fb;
+  border: 1px solid #c9ddf0;
+  border-radius: 8px;
+  margin-bottom: 0.75rem;
+}
+
+.case-id {
+  font-weight: 600;
+  font-size: 0.95rem;
+  color: #0f2b4a;
+}
+
+.build-badge {
+  font-size: 0.72rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: #1a5276;
+  background: #d6e7f7;
+  padding: 0.15rem 0.45rem;
+  border-radius: 4px;
+}
+
+.case-summary {
+  color: #6b7280;
+  font-size: 0.85rem;
+}
+
+.case-actions {
+  margin-left: auto;
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+/* ── Control bar (y-axis, ploidy, purity) ──────────────── */
+.controls-bar {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+  padding: 0.45rem 0.85rem;
+  background: #f5f9fd;
+  border: 1px solid #c9ddf0;
+  border-radius: 8px;
+  margin-bottom: 0.5rem;
+  font-size: 0.8rem;
+  color: #4b5563;
+}
+
+.control-group {
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+}
+
+.control-group + .control-group {
+  padding-left: 0.75rem;
+  border-left: 1px solid #c9ddf0;
+}
+
+.control-label {
+  font-weight: 500;
+  color: #1a5276;
+  white-space: nowrap;
+}
+
+.control-input {
+  width: 3.2rem;
+  text-align: center;
+  font-size: 0.8rem;
+  padding: 0.2rem 0.3rem;
+  border: 1px solid #d1d5db;
+  border-radius: 4px;
+  background: #fff;
+  color: #374151;
+  transition: border-color 0.15s;
+}
+.control-input:focus {
+  outline: none;
+  border-color: #5ba3d9;
+  box-shadow: 0 0 0 2px rgba(26, 82, 118, 0.15);
+}
+
+.control-hint {
+  color: #9ca3af;
+  font-size: 0.72rem;
+}
+
+/* ── File upload ───────────────────────────────────────── */
+.upload-card {
+  max-width: 480px;
+  margin: 2rem auto;
+  padding: 2rem;
+  background: #eef4fb;
+  border: 1px solid #c9ddf0;
+  border-radius: 12px;
+}
+
+.upload-card h2 {
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: #0f2b4a;
+  margin-bottom: 1.25rem;
+}
+
+.upload-field {
+  margin-bottom: 1rem;
+}
+
+.upload-field label {
+  display: block;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #374151;
+  margin-bottom: 0.3rem;
+}
+
+.upload-field .optional {
+  font-weight: 400;
+  color: #9ca3af;
+}
+
+.upload-field select,
+.upload-field input[type="file"] {
+  font-size: 0.9rem;
+  color: #374151;
+}
+
+.upload-field select {
+  padding: 0.35rem 0.5rem;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  background: #fff;
+}
+
+.upload-error {
+  color: #dc2626;
+  font-size: 0.85rem;
+  margin-top: 0.75rem;
+}
+
+/* ── Gene search ───────────────────────────────────────── */
+.gene-search {
+  position: relative;
+  width: 260px;
+}
+
+.gene-search-input {
+  width: 100%;
+  padding: 0.4rem 0.7rem;
+  font-size: 0.85rem;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  background: #fff;
+  color: #374151;
+  transition: border-color 0.15s;
+}
+.gene-search-input::placeholder {
+  color: #9ca3af;
+}
+.gene-search-input:focus {
+  outline: none;
+  border-color: #5ba3d9;
+  box-shadow: 0 0 0 2px rgba(26, 82, 118, 0.15);
+}
+
+.gene-search-dropdown {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  background: #fff;
+  border: 1px solid #d1d5db;
+  border-top: none;
+  border-radius: 0 0 6px 6px;
+  max-height: 280px;
+  overflow-y: auto;
+  z-index: 20;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+
+.gene-search-item {
+  padding: 0.4rem 0.7rem;
+  cursor: pointer;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.82rem;
+  transition: background 0.1s;
+}
+.gene-search-item:hover,
+.gene-search-item.active {
+  background: #eef4fb;
+}
+.gene-search-item .name {
+  font-weight: 500;
+  color: #0f2b4a;
+}
+.gene-search-item .meta {
+  color: #6b7280;
+  font-size: 0.75rem;
+}
+.gene-search-item .probe-count {
+  color: #1a5276;
+}
+
+/* ── About page ──────────────────────────────────────── */
+.about-page {
+  max-width: 720px;
+  margin: 1.5rem auto;
+  padding: 2rem 2.5rem;
+  background: #eef4fb;
+  border: 1px solid #c9ddf0;
+  border-radius: 12px;
+}
+
+.about-content h2 {
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: #0f2b4a;
+  margin: 0 0 1.25rem;
+}
+
+.about-content h3 {
+  font-size: 1rem;
+  font-weight: 600;
+  color: #1a5276;
+  margin: 1.25rem 0 0.4rem;
+}
+
+.about-content h4 {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: #374151;
+  margin: 1rem 0 0.25rem;
+}
+
+.about-content p {
+  font-size: 0.9rem;
+  color: #374151;
+  line-height: 1.55;
+  margin: 0.4rem 0;
+}
+
+.about-content ul {
+  margin: 0.4rem 0 0.4rem 1.25rem;
+  padding: 0;
+  font-size: 0.9rem;
+  color: #374151;
+  line-height: 1.6;
+}
+
+.about-content code {
+  font-size: 0.82rem;
+  background: #d6e7f7;
+  padding: 0.1rem 0.35rem;
+  border-radius: 3px;
+  color: #0f2b4a;
+}
+
+.about-content .btn {
+  margin-top: 1.5rem;
+}
+
+/* CNViz report files: which case, when, and which app version */
+.report-banner {
+  margin: 0 0 0.5rem;
+  padding: 0.4rem 0.85rem;
+  font-size: 0.85rem;
+  color: #1a3d5c;
+  background: #fff8e1;
+  border: 1px solid #ffe082;
+  border-radius: 8px;
+}
+
+/* ⓘ next to a control: its explanation shows on hover (title attribute) */
+.info-icon {
+  color: #0072B2;
+  font-size: 0.85rem;
+  cursor: help;
+  user-select: none;
+}
+
+/* Tables, numbered lists and command examples on the About / For labs pages */
+.about-content table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 0.6rem 0;
+  font-size: 0.82rem;
+  color: #374151;
+}
+.about-content th,
+.about-content td {
+  text-align: left;
+  vertical-align: top;
+  padding: 0.35rem 0.5rem;
+  border-bottom: 1px solid #c9ddf0;
+}
+.about-content thead th {
+  color: #1a5276;
+  border-bottom: 2px solid #c9ddf0;
+}
+.about-content ol {
+  margin: 0.4rem 0 0.4rem 1.25rem;
+  padding: 0;
+  font-size: 0.9rem;
+  color: #374151;
+  line-height: 1.6;
+}
+.about-content pre {
+  font-size: 0.78rem;
+  background: #0f2b4a;
+  color: #e8f1fa;
+  padding: 0.75rem 1rem;
+  border-radius: 6px;
+  overflow-x: auto;
+  line-height: 1.5;
+}
+.about-content a {
+  color: #0072B2;
+}
+.about-content td code {
+  white-space: nowrap;
+}
+
+/* Phones: tables scroll sideways inside the card instead of running off it */
+@media (max-width: 600px) {
+  .about-page {
+    padding: 1.25rem 1rem;
+    margin: 1rem 0.5rem;
+  }
+  .about-content table {
+    display: block;
+    overflow-x: auto;
+  }
+}

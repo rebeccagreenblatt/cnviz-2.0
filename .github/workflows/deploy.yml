@@ -1,0 +1,64 @@
+name: Deploy to GitHub Pages
+
+# Builds the demo-only cnviz.com website and deploys it to GitHub Pages on every push to main.
+# Hardening: third-party actions are pinned to exact commits (version in the comment), dependency install
+# scripts are disabled, and only the deploy job can write to Pages.
+on:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
+
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
+        with:
+          node-version-file: frontend/.nvmrc
+
+      # Exact versions from package-lock.json; --ignore-scripts: no dependency code runs at install time.
+      # --legacy-peer-deps: vite-plugin-pwa's declared peer range lags the Vite version in use.
+      - name: Install dependencies
+        working-directory: frontend
+        run: npm ci --ignore-scripts --legacy-peer-deps
+
+      # Nothing is built or published unless every test passes
+      - name: Test the app
+        working-directory: frontend
+        run: npm test
+
+      - name: Test the report script
+        run: python3 -m unittest discover report
+
+      - name: Build
+        working-directory: frontend
+        run: npm run build
+
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@56afc609e74202658d3ffba0e8f6dda462b719fa # v3.0.1
+        with:
+          path: frontend/dist
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    permissions:
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@d6db90164ac5ed86f2b6aed7e0febac5b3c0c03e # v4.0.5

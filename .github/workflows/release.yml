@@ -1,0 +1,109 @@
+name: Release offline build
+
+# Runs only when a version tag is pushed (e.g. v2.0.0). Builds the offline single-file CNViz from that exact
+# commit, records its SHA-256 checksum, has GitHub sign a build-provenance record (verifiable with
+# `gh attestation verify`), and publishes a GitHub release with the file and checksum attached.
+#
+# Hardening: third-party actions are pinned to exact commits (version in the comment), dependency install
+# scripts are disabled, and the build job has read-only access. Only the publish job can write.
+on:
+  push:
+    tags: ['v*']
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    outputs:
+      version: ${{ steps.version.outputs.version }}
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
+
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
+        with:
+          node-version-file: frontend/.nvmrc
+
+      - name: Check tag matches package.json version
+        id: version
+        working-directory: frontend
+        run: |
+          version=$(node -p "require('./package.json').version")
+          if [ "v$version" != "$GITHUB_REF_NAME" ]; then
+            echo "Tag $GITHUB_REF_NAME does not match package.json version $version"; exit 1
+          fi
+          echo "version=$version" >> "$GITHUB_OUTPUT"
+
+      # Exact versions from package-lock.json; --ignore-scripts: no dependency code runs at install time.
+      # --legacy-peer-deps: vite-plugin-pwa's declared peer range lags the Vite version in use.
+      - name: Install dependencies
+        working-directory: frontend
+        run: npm ci --ignore-scripts --legacy-peer-deps
+
+      # Nothing is built or published unless every test passes
+      - name: Test the app
+        working-directory: frontend
+        run: npm test
+
+      - name: Test the report script
+        run: python3 -m unittest discover report
+
+      - name: Build offline single file
+        working-directory: frontend
+        run: npm run build:offline
+
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: offline-build
+          path: frontend/dist-offline/
+          if-no-files-found: error
+
+  publish:
+    needs: build
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write      # create the release
+      id-token: write      # needed to sign the provenance record
+      attestations: write  # store the provenance record
+    env:
+      VERSION: ${{ needs.build.outputs.version }}
+    steps:
+      - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4.3.0
+        with:
+          name: offline-build
+          path: dist-offline
+
+      - name: Confirm the file matches the checksum computed at build time
+        working-directory: dist-offline
+        run: sha256sum -c "cnviz-$VERSION.html.sha256"
+
+      - name: Sign build provenance
+        uses: actions/attest-build-provenance@e8998f949152b193b063cb0ec769d69d929409be # v2.4.0
+        with:
+          subject-path: dist-offline/cnviz-${{ env.VERSION }}.html
+
+      - name: Publish release
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+        run: |
+          file="cnviz-$VERSION.html"
+          sum=$(cut -d' ' -f1 "dist-offline/$file.sha256")
+          cat > notes.md <<EOF
+          Offline single-file CNViz $VERSION, built automatically from commit $GITHUB_SHA.
+
+          **SHA-256:** \`$sum\`
+
+          Verify the download:
+          \`\`\`
+          shasum -a 256 $file
+          gh attestation verify $file --repo $GITHUB_REPOSITORY
+          \`\`\`
+          Pin this checksum in report pipelines with \`cnviz_report.py --expect-sha256 $sum\`.
+          EOF
+          gh release create "$GITHUB_REF_NAME" \
+            "dist-offline/$file" "dist-offline/$file.sha256" \
+            --title "CNViz $VERSION" --notes-file notes.md

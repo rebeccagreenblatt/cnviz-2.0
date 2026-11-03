@@ -1,0 +1,3 @@
+Hugo_Symbol	Chromosome	Start_Position	Reference_Allele	Tumor_Seq_Allele2	HGVSc	HGVSp_Short	Variant_Classification	ClinVar_Significance	t_ref_count	t_alt_count
+TERT	chr5	1295228	G	A	c.-124C>T		5'Flank	Pathogenic	275	225
+TP53	chr17	7674220	C	T	c.524G>A	p.R175H	Missense_Mutation	Pathogenic	208	192
