@@ -14,12 +14,12 @@ There are two ways to use it, both built from the same single HTML file:
 - **Report file (recommended):** your bioinformatics pipeline runs `report/cnviz_report.py` to generate one interactive HTML file per case. Pathologists open the report (with the case data preloaded).
 - **Offline viewer:** an interactive html file hosted on a shared drive or internal web server; users load a case's files by hand.
 
-Download both from the [latest release](https://github.com/rebeccagreenblatt/cnviz-2.0/releases). Setup
-instructions, input formats and an example command are on the **For labs** page of [cnviz.com](https://cnviz.com).
-
+Download the files from the [latest release](https://github.com/rebeccagreenblatt/cnviz-2.0/releases).
 To be notified of new releases, click **Watch → Custom → Releases** at the top of this page.
 
 ## Making a report file
+
+Requires Python 3.8 or later (nothing else to install).
 
 1. Download `cnviz-2.0.0.html` and `cnviz_report.py` from the latest release, and verify the HTML file
    (see [Verifying a release](#verifying-a-release)).
@@ -49,8 +49,38 @@ To be notified of new releases, click **Watch → Custom → Releases** at the t
      every report; `--purity` defaults to 100 and `--ploidy` to 2; `--name` defaults to the file name.
      Any input can be gzipped.
 
-   `python3 cnviz_report.py --help` lists every option; the For labs page on cnviz.com describes the input formats.
-3. Open the report file (`S1_cnviz.html`) by double-clicking it. 
+   `python3 cnviz_report.py --help` lists every option. Input formats are [below](#input-files). A report contains
+   the case's data, so store it wherever your lab keeps case results.
+3. Open the report file (`S1_cnviz.html`) by double-clicking it.
+
+## Offline viewer
+
+1. Download `cnviz-2.0.0.html` from the latest release and verify it
+   (see [Verifying a release](#verifying-a-release)).
+2. Put the file on a shared drive, read-only for users, or an internal web server (for example, if your browsers
+   block opening HTML files from network drives).
+3. Users open it in Chrome, Edge or Firefox and load a case's files.
+
+## Input files
+
+CNViz reads CNVkit's `.cnr` (bins) and `.cns` (segments) format. Using a different CNV caller? Convert its output to
+these columns, and CNViz will display it the same way.
+
+| File | Required columns | Optional columns used |
+|---|---|---|
+| `.cnr` | chromosome, start, end, log2 | gene (CNVkit's labels, including "Antitarget"), depth, weight |
+| `.cns` | chromosome, start, end, log2 | |
+| BAF `.vcf` | Standard VCF with AF or AD in the sample column (first sample column used; PASS or unfiltered only) | |
+| BAF `.maf` | Chromosome, Start_Position, t_alt_count, t_ref_count | |
+| BAF `.baf` | chromosome, start, end, baf (DRAGEN style) | |
+| Variants `.maf` | Hugo_Symbol, Chromosome, Start_Position | Reference_Allele, Tumor_Seq_Allele2, HGVSc, HGVSp_Short, Variant_Classification, a significance column (e.g. CLIN_SIG), t_alt_count, t_ref_count, t_depth |
+
+- **File shape:** tab-separated text with one header row of column names. Extra columns are ignored.
+- **log2:** the log2 ratio of the sample's coverage to a diploid reference (0 = two copies), as CNVkit reports it.
+- **Coordinates:** CNVkit's convention (BED-style: 0-based start, end not included), matching the build you choose
+  (hg19 or hg38).
+- **Chromosomes** can be named `chr7` or `7`.
+- Gene positions come from CNViz's bundled UCSC reference, not from your files.
 
 ## Verifying a release
 

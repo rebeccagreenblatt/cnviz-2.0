@@ -53,7 +53,7 @@ export default function AboutPage({ onBack }: AboutPageProps) {
           <p>
             You can load any combination: bins only, segments only, or both. Gzipped files (.gz) are accepted, and
             chromosomes can be named "chr7" or "7". Exact column requirements, for converting output from other
-            callers: see the For labs page on cnviz.com.
+            callers: see the README in the CNViz GitHub repository.
           </p>
         </section>
 
