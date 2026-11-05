@@ -1,16 +1,7 @@
 import { useRef, useState } from "react";
-import { DEMO_ONLY } from "../buildMode";
-import { fileKind, parseCnr, parseCns, parseBafFile, parseMaf, parseSomaticMaf } from "../parsers";
+import { loadDemoCase } from "../demoCase";
+import { fileKind, parseCnr, parseCns, parseBafFile, parseSomaticMaf } from "../parsers";
 import type { Build, LoadedCase, Probe, Segment, SkippedRows, SomaticVariant, VcfVariant } from "../types";
-import demoCnr from "../../public/demo/demo_gbm.cnr?raw";
-import demoCns from "../../public/demo/demo_gbm.cns?raw";
-import demoBaf from "../../public/demo/demo_gbm_baf.maf?raw";
-import demoVariants from "../../public/demo/demo_gbm_variants.maf?raw";
-import demoControl1 from "../../public/demo/demo_control_1.cns?raw";
-import demoControl2 from "../../public/demo/demo_control_2.cns?raw";
-import demoControl3 from "../../public/demo/demo_control_3.cns?raw";
-import demoControl4 from "../../public/demo/demo_control_4.cns?raw";
-import demoControl5 from "../../public/demo/demo_control_5.cns?raw";
 
 interface FileUploadProps {
   onFilesLoaded: (data: LoadedCase) => void;
@@ -40,16 +31,7 @@ export default function FileUpload({ onFilesLoaded }: FileUploadProps) {
     setLoading(true);
     setError(null);
     try {
-      const toFile = (text: string, name: string) => new File([text], name);
-      const demoControls = [demoControl1, demoControl2, demoControl3, demoControl4, demoControl5];
-      const [probes, segments, variants, somaticVariants, ...controlSamples] = await Promise.all([
-        parseCnr(toFile(demoCnr, "demo_gbm.cnr")),
-        parseCns(toFile(demoCns, "demo_gbm.cns")),
-        parseMaf(toFile(demoBaf, "demo_gbm_baf.maf")),
-        parseSomaticMaf(toFile(demoVariants, "demo_gbm_variants.maf")),
-        ...demoControls.map((c, i) => parseCns(toFile(c, `demo_control_${i + 1}.cns`))),
-      ]);
-      onFilesLoaded({ caseId: "Demo — GBM", build: "hg38", probes, segments, variants, somaticVariants, controlSamples });
+      onFilesLoaded(await loadDemoCase());
     } catch (e) {
       setError(String(e));
     } finally {
@@ -189,21 +171,6 @@ export default function FileUpload({ onFilesLoaded }: FileUploadProps) {
       />
     </div>
   );
-
-  if (DEMO_ONLY) {
-    return (
-      <div className="upload-card">
-        <h2>CNViz demo</h2>
-        <p style={{ fontSize: "0.9rem", color: "#555", margin: "0.5rem 0 1rem" }}>
-          This site shows a demo case only. To view your own data, use the offline version or a CNViz report, run inside your institution.
-        </p>
-        <button className="btn btn-primary" onClick={handleLoadDemo} disabled={loading} style={{ cursor: loading ? "wait" : "pointer" }}>
-          {loading ? "Loading..." : "Try the demo case (GBM)"}
-        </button>
-        {error && <p className="upload-error">{error}</p>}
-      </div>
-    );
-  }
 
   return (
     <>

@@ -29,10 +29,7 @@ export default function ForLabsPage({ onBack }: { onBack: () => void }) {
     <div className="about-page">
       <div className="about-content">
         <h2>Using CNViz in your lab</h2>
-        <p>
-          cnviz.com shows a demo case only, and nothing can be uploaded here. To view your own cases, run CNViz inside
-          your institution, in one of two ways:
-        </p>
+        <p>To view your own cases, run CNViz at your institution, in one of two ways:</p>
         <table>
           <thead>
             <tr><th></th><th>Report file (recommended)</th><th>Offline viewer</th></tr>
@@ -43,10 +40,6 @@ export default function ForLabsPage({ onBack }: { onBack: () => void }) {
             <tr><th>What users do</th><td>Open the case's report file</td><td>Open the viewer, choose the case's files</td></tr>
           </tbody>
         </table>
-        <p>
-          Both are the same app, and both work fully offline: no installation, no server, no network connections. Your
-          team reviews and controls the exact version you run, and nothing changes unless you install a new version.
-        </p>
 
         <section>
           <h3>What you need</h3>
@@ -137,34 +130,25 @@ export default function ForLabsPage({ onBack }: { onBack: () => void }) {
             <li><strong>Checksum:</strong> <code>shasum -a 256 cnviz-2.0.0.html</code> must match the release page.</li>
             <li><strong>Built by GitHub from the public source:</strong> <code>gh attestation verify cnviz-2.0.0.html --repo rebeccagreenblatt/cnviz-2.0</code> confirms
               GitHub's automated build produced this exact file from the published code. A file uploaded by hand would fail.</li>
-            <li><strong>Or build it from source yourself:</strong> see <ExternalLink href={BUILDING}>BUILDING.md</ExternalLink> on
-              GitHub. The result is identical to the release, with the same checksum.</li>
           </ul>
+          <p>To build it from source yourself, see <ExternalLink href={BUILDING}>BUILDING.md</ExternalLink>.</p>
         </section>
 
         <section>
           <h3>Updating</h3>
           <p>
-            New versions are published as GitHub releases. Nothing updates on its own: your team reviews a new version,
-            verifies it, and replaces the file or template when ready.
-          </p>
-          <p>
-            To be notified of new releases, click <strong>Watch → Custom → Releases</strong> on
+            New versions are published on GitHub. To be notified, click <strong>Watch → Custom → Releases</strong> on
             the <ExternalLink href={REPO}>GitHub repository</ExternalLink>.
           </p>
         </section>
 
         <section>
-          <h3>Security, and what CNViz is not</h3>
-          <ul>
-            <li><strong>Protects:</strong> CNViz never uploads or stores data, and makes no network connections. Its
-              security policy allows only the released code to run.</li>
-            <li><strong>Doesn't protect against:</strong> a modified copy of CNViz itself (hence verifying releases), or
-              browser extensions on the user's computer, which can read any page. The full security summary is in
-              the <ExternalLink href={REPO}>repository</ExternalLink>.</li>
-            <li><strong>Not a validated test:</strong> CNViz is a visualization aid. Whether and how to use it clinically,
-              and what validation is needed, is your lab's decision.</li>
-          </ul>
+          <h3>Security</h3>
+          <p>
+            CNViz runs on your computer and doesn't upload or store data. Please use institutionally managed computers
+            without third-party browser extensions. CNViz is a visualization aid, not a validated clinical test.
+            Details: <ExternalLink href={`${REPO}/blob/main/SECURITY.md`}>SECURITY.md</ExternalLink>.
+          </p>
         </section>
 
         <section>

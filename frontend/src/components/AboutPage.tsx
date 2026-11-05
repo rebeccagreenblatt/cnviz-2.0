@@ -30,24 +30,11 @@ export default function AboutPage({ onBack }: AboutPageProps) {
         </section>
 
         <section>
-          <h3>Privacy &amp; Security</h3>
+          <h3>Privacy</h3>
           <p>
-            <strong>
-              CNViz runs entirely on your computer. Files are never uploaded or stored, and CNViz makes no network
-              connections.
-            </strong>
-          </p>
-          <ul>
-            <li>Files are read and processed on your computer; there is no server, database or cloud storage.</li>
-            <li>Nothing is kept between sessions. Closing the page discards the case.</li>
-            <li>Clicking a variant position copies the locus so you can paste it into IGV. CNViz does not connect to IGV.</li>
-            <li>CNViz is a visualization aid, not a validated clinical test. Your institution decides whether and how it may be used with patient data.</li>
-          </ul>
-          <p>
-            These protections depend on running a genuine copy of CNViz, which is why labs install a verified release
-            (see the For labs page on cnviz.com). Browser extensions can read any page, so use an institutionally
-            managed computer and a browser profile free of third-party extensions. Full details: SECURITY.md in the
-            CNViz GitHub repository.
+            CNViz runs entirely on your computer. Files are never uploaded or stored. Please use an institutionally
+            managed computer without third-party browser extensions. CNViz is a visualization aid, not a validated
+            clinical test. See SECURITY.md in the CNViz GitHub repository for details.
           </p>
         </section>
 

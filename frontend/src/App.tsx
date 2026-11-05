@@ -7,6 +7,7 @@ import ForLabsPage from "./components/ForLabsPage";
 import GeneSearch from "./components/GeneSearch";
 import { computeControlBand, computeGeneMeans, mergeGenes } from "./compute";
 import { getGenes, getReference } from "./data/reference";
+import { loadDemoCase } from "./demoCase";
 import { loadEmbeddedCase, readEmbeddedCase, type ReportInfo } from "./embeddedCase";
 import type { Build, ControlBand, Gene, GeneMean, LoadedCase, Probe, Segment, SomaticVariant, VcfVariant } from "./types";
 import "./App.css";
@@ -85,6 +86,12 @@ function App() {
     );
   }, [handleFilesLoaded]);
 
+  // cnviz.com opens straight to the demo case
+  useEffect(() => {
+    if (!DEMO_ONLY) return;
+    loadDemoCase().then(handleFilesLoaded, (e) => setReportError(e instanceof Error ? e.message : String(e)));
+  }, [handleFilesLoaded]);
+
   const handleControlFiles = useCallback((samples: Segment[][]) => {
     setControlBand(computeControlBand(samples));
     setControlCount(samples.length);
@@ -133,14 +140,22 @@ function App() {
           Report: <strong>{report.name}</strong> · generated {report.generated} · CNViz {report.version}
         </div>
       )}
-      {reportError && <p className="upload-error">Could not open this report: {reportError}</p>}
+      {DEMO_ONLY && page === "app" && (
+        <div className="report-banner">
+          Demo case (synthetic data). To view your own data, see{" "}
+          <button className="link-button" onClick={() => setPage("labs")}>For labs</button>.
+        </div>
+      )}
+      {reportError && <p className="upload-error">Could not open {DEMO_ONLY ? "the demo case" : "this report"}: {reportError}</p>}
 
       {page === "about" ? (
         <AboutPage onBack={() => setPage("app")} />
       ) : page === "labs" ? (
         <ForLabsPage onBack={() => setPage("app")} />
       ) : !caseId ? (
-        EMBEDDED.case || EMBEDDED.error ? (reportError ? null : <p className="case-summary">Opening report…</p>) : <FileUpload onFilesLoaded={handleFilesLoaded} />
+        DEMO_ONLY || EMBEDDED.case || EMBEDDED.error
+          ? (reportError ? null : <p className="case-summary">{DEMO_ONLY ? "Loading demo case…" : "Opening report…"}</p>)
+          : <FileUpload onFilesLoaded={handleFilesLoaded} />
       ) : (
         <div>
           <div className="case-bar">
@@ -153,10 +168,8 @@ function App() {
             )}
             <div className="case-actions">
               <GeneSearch genes={genes} selectedGene={selectedGene} onSelect={handleGeneSelect} />
-              {!report && (
-                <button className="btn" onClick={resetCase}>
-                  {DEMO_ONLY ? "Back" : "Load New Case"}
-                </button>
+              {!report && !DEMO_ONLY && (
+                <button className="btn" onClick={resetCase}>Load New Case</button>
               )}
             </div>
           </div>
