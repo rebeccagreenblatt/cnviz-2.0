@@ -38,7 +38,7 @@ export default function ForLabsPage({ onBack }: { onBack: () => void }) {
             <tr><th></th><th>Report file (recommended)</th><th>Offline viewer</th></tr>
           </thead>
           <tbody>
-            <tr><th>What it is</th><td>Your pipeline writes one HTML file per case, with the case already loaded</td><td>One HTML file; users load a case's files by hand</td></tr>
+            <tr><th>What it is</th><td>Your pipeline writes one HTML file per case, with the case data already loaded</td><td>One HTML file; users load a case's files by hand</td></tr>
             <tr><th>Who sets it up</th><td>Bioinformatics team, as one pipeline step</td><td>Bioinformatics or IT team, once</td></tr>
             <tr><th>What users do</th><td>Open the case's report file</td><td>Open the viewer, choose the case's files</td></tr>
           </tbody>
