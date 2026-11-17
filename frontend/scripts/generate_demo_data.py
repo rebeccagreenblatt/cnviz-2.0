@@ -358,8 +358,21 @@ def get_depth_for_log2(log2_val):
     depth = max(10, depth + random.randint(-30, 30))
     return depth
 
+# About 30% of SNP sites are homozygous (BAF ~0 or ~1) on every chromosome, as in an unfiltered SNP file.
+# Separate generator, so the other demo files (drawn from the seed-42 stream) are unchanged.
+hom_rng = random.Random(7)
+
 def get_baf_for_chrom(chrom, pos):
     """Return BAF value for a genomic position."""
+    r = hom_rng.random()
+    if r < 0.15:
+        return noise(0.0, 0.03)   # homozygous reference
+    if r < 0.30:
+        return noise(1.0, 0.03)   # homozygous alternate
+    return het_baf_for_chrom(chrom, pos)
+
+def het_baf_for_chrom(chrom, pos):
+    """BAF of a heterozygous SNP, given the copy-number state at that position."""
     # EGFR amplicon on chr7 - extreme imbalance
     if chrom == "chr7" and EGFR_START <= pos <= EGFR_END:
         if random.random() < 0.5:
@@ -367,15 +380,9 @@ def get_baf_for_chrom(chrom, pos):
         return noise(0.05, 0.04)
     # Chr7 gain (3 copies: AAB/ABB pattern)
     if chrom == "chr7":
-        r = random.random()
-        if r < 0.15:
-            return noise(0.0, 0.03)   # homozygous AAA
-        elif r < 0.30:
-            return noise(1.0, 0.03)   # homozygous BBB
-        elif r < 0.65:
+        if random.random() < 0.5:
             return noise(0.33, 0.06)  # het AAB
-        else:
-            return noise(0.67, 0.06)  # het ABB
+        return noise(0.67, 0.06)      # het ABB
     # Chr10 loss (LOH)
     if chrom == "chr10":
         if random.random() < 0.5:
